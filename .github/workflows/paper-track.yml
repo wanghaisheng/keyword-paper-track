@@ -65,7 +65,7 @@ jobs:
 
       - name: Upload generated CSV as artifact
         # This step makes the generated CSV file available for download from the workflow run
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: google-scholar-results-csv
           path: ${{ github.event.inputs.output_filename }} # Path to the file to upload

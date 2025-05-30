@@ -3,8 +3,6 @@
 name: Google Scholar Scraper
 
 on:
-  # This makes the workflow runnable manually from the GitHub Actions UI.
-  # It allows you to specify inputs for each run.
   workflow_dispatch:
     inputs:
       keywords:
@@ -16,7 +14,7 @@ on:
         description: 'Start year for publications (e.g., 2022)'
         required: true
         default: 2022
-        type: number # Using 'number' type ensures integer input validation in the UI
+        type: number
       end_year:
         description: 'End year for publications (e.g., 2024)'
         required: true
@@ -30,43 +28,40 @@ on:
 
 jobs:
   scrape-scholar-data:
-    runs-on: ubuntu-latest # Use a Linux runner environment
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Action to get your code into the runner
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v4 # Action to set up Python environment
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11' # Specify the Python version you want to use
+          python-version: '3.11'
 
       - name: Install Python dependencies
         run: |
-          pip install pandas scholarly
+          python -m pip install --upgrade pip # Ensure pip is up-to-date
+          # Upgrade scholarly, httpx, and pandas to their latest compatible versions
+          pip install --upgrade scholarly httpx pandas
+          # Optional: Add this step for debugging if issues persist
+          # pip freeze
 
       - name: Create output directory if it doesn't exist
-        # This is important if your `output_filename` includes subdirectories
-        # like 'north_america_triatomine/'. The runner's base directory won't have it.
         run: |
-          # Use dirname to extract the directory path, and mkdir -p to create it recursively
           mkdir -p $(dirname ${{ github.event.inputs.output_filename }})
 
       - name: Run Google Scholar Scraper Script
-        # Pass the workflow inputs as environment variables to the Python script
         env:
           INPUT_KEYWORDS: ${{ github.event.inputs.keywords }}
           INPUT_START_YEAR: ${{ github.event.inputs.start_year }}
           INPUT_END_YEAR: ${{ github.event.inputs.end_year }}
           INPUT_OUTPUT_FILENAME: ${{ github.event.inputs.output_filename }}
-        # Execute your Python script. Replace `scholar_scraper.py` with your actual script name.
-        # Make sure the path to your script is correct relative to the repository root.
-        run: python scripts/scholar_scraper.py
+        run: python scripts/scholar_scraper.py # Adjust script path if different
 
       - name: Upload generated CSV as artifact
-        # This step makes the generated CSV file available for download from the workflow run
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: google-scholar-results-csv
-          path: ${{ github.event.inputs.output_filename }} # Path to the file to upload
-          retention-days: 7 # Keep the artifact for 7 days (optional)
+          path: ${{ github.event.inputs.output_filename }}
+          retention-days: 7

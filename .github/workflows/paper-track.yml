@@ -61,7 +61,7 @@ jobs:
           INPUT_OUTPUT_FILENAME: ${{ github.event.inputs.output_filename }}
         # Execute your Python script. Replace `scholar_scraper.py` with your actual script name.
         # Make sure the path to your script is correct relative to the repository root.
-        run: python scholar_scraper.py
+        run: python scripts/scholar_scraper.py
 
       - name: Upload generated CSV as artifact
         # This step makes the generated CSV file available for download from the workflow run

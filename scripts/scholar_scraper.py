@@ -2,7 +2,7 @@
 
 from scholarly import scholarly
 from scholarly import ProxyGenerator
-from scholarly.lib.exceptions import MaxTriesExceededException # Import the specific exception
+from scholarly import MaxTriesExceededException # Import the specific exception
 
 import pandas as pd
 import time

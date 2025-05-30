@@ -60,7 +60,7 @@ jobs:
         run: python scripts/scholar_scraper.py # Adjust script path if different
 
       - name: Upload generated CSV as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: google-scholar-results-csv
           path: ${{ github.event.inputs.output_filename }}
